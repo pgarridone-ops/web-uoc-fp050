@@ -1,0 +1,39 @@
+# Deployment: varias réplicas de la web = alta disponibilidad.
+# Jenkins sustituye los valores en MAYÚSCULAS antes de aplicarlo.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-uoc
+  labels:
+    app: web-uoc
+spec:
+  replicas: REPLICAS
+  selector:
+    matchLabels:
+      app: web-uoc
+  template:
+    metadata:
+      labels:
+        app: web-uoc
+    spec:
+      containers:
+        - name: web-uoc
+          image: IMAGEN
+          imagePullPolicy: IfNotPresent   # la imagen se carga en Minikube, no se descarga
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENTORNO
+              value: "ENTORNO_APP"
+          readinessProbe:                 # no recibe tráfico hasta que /health responde
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:                  # si deja de responder, se reinicia
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
