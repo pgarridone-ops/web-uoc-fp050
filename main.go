@@ -31,7 +31,7 @@ type Pagina struct {
 }
 
 // Versión de la aplicación. Se cambia para probar el despliegue automático.
-const version = "1"
+const version = "2"
 
 func getenv(clave, defecto string) string {
 	if v := os.Getenv(clave); v != "" {
